@@ -41,12 +41,20 @@ class TFLGpuDelegateOptions extends Struct {
   @Int32()
   int waitType;
 
+  /// Allows execution of integer quantized models
+  @Int32()
+  int enableQuantization;
+
   static Pointer<TFLGpuDelegateOptions> allocate(
-      bool allowPrecisionLoss, TFLGpuDelegateWaitType waitType) {
+      bool allowPrecisionLoss,
+      TFLGpuDelegateWaitType waitType,
+      bool enableQuantization
+    ) {
     final result = calloc<TFLGpuDelegateOptions>();
     result.ref
       ..allowPrecisionLoss = allowPrecisionLoss ? 1 : 0
-      ..waitType = waitType.index;
+      ..waitType = waitType.index
+      ..enableQuantization = enableQuantization ? 1 : 0;
     return result;
   }
 }
@@ -89,20 +97,24 @@ class TfLiteGpuDelegateOptionsV2 extends Struct {
   int inferencePriority2;
   @Int32()
   int inferencePriority3;
+  @Int64()
+  int experimentalFlags;
 
   static Pointer<TfLiteGpuDelegateOptionsV2> allocate(
       bool isPrecisionLossAllowed,
       TfLiteGpuInferenceUsage inferencePreference,
       TfLiteGpuInferencePriority inferencePriority1,
       TfLiteGpuInferencePriority inferencePriority2,
-      TfLiteGpuInferencePriority inferencePriority3) {
+      TfLiteGpuInferencePriority inferencePriority3,
+      TfLiteGpuExperimentalFlags experimentalFlags) {
     final result = calloc<TfLiteGpuDelegateOptionsV2>();
     result.ref
       ..isPrecisionLossAllowed = isPrecisionLossAllowed ? 1 : 0
       ..inferencePreference = inferencePreference.index
       ..inferencePriority1 = inferencePriority1.index
       ..inferencePriority2 = inferencePriority2.index
-      ..inferencePriority3 = inferencePriority3.index;
+      ..inferencePriority3 = inferencePriority3.index
+      ..experimentalFlags = experimentalFlags.index == 0 ? 0 : (1 << (experimentalFlags.index - 1));
     return result;
   }
 }
@@ -175,4 +187,18 @@ enum TfLiteGpuInferencePriority {
 
   /// TFLITE_GPU_INFERENCE_PRIORITY_MIN_MEMORY_USAGE,
   minMemoryUsage,
+}
+
+enum TfLiteGpuExperimentalFlags {
+// TFLITE_GPU_EXPERIMENTAL_FLAGS_NONE = 0,
+  none,
+// Enables inference on quantized models with the delegate.
+// NOTE: This is enabled in TfLiteGpuDelegateOptionsV2Default.
+// TFLITE_GPU_EXPERIMENTAL_FLAGS_ENABLE_QUANT = 1 << 0,
+  enableQuant,
+// Enforces execution with the provided backend.
+// TFLITE_GPU_EXPERIMENTAL_FLAGS_CL_ONLY = 1 << 1,
+  clOnly,
+// TFLITE_GPU_EXPERIMENTAL_FLAGS_GL_ONLY = 1 << 2
+  glOnly,
 }

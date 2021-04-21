@@ -38,9 +38,16 @@ class GpuDelegateOptions {
   GpuDelegateOptions._(this._options);
 
   factory GpuDelegateOptions(
-      bool allowPrecisionLoss, TFLGpuDelegateWaitType waitType) {
+      bool allowPrecisionLoss,
+      TFLGpuDelegateWaitType waitType,
+      bool enableQuantization
+    ) {
     return GpuDelegateOptions._(
-        TFLGpuDelegateOptions.allocate(allowPrecisionLoss, waitType));
+        TFLGpuDelegateOptions.allocate(
+            allowPrecisionLoss, 
+            waitType, 
+            enableQuantization
+        ));
   }
 
   void delete() {

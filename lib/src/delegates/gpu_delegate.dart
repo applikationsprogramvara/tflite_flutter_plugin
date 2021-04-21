@@ -49,13 +49,15 @@ class GpuDelegateOptionsV2 {
       TfLiteGpuInferenceUsage inferencePreference,
       TfLiteGpuInferencePriority inferencePriority1,
       TfLiteGpuInferencePriority inferencePriority2,
-      TfLiteGpuInferencePriority inferencePriority3) {
+      TfLiteGpuInferencePriority inferencePriority3,
+      TfLiteGpuExperimentalFlags experimentalFlags) {
     return GpuDelegateOptionsV2._(TfLiteGpuDelegateOptionsV2.allocate(
         isPrecisionLossAllowed,
         inferencePreference,
         inferencePriority1,
         inferencePriority2,
-        inferencePriority3));
+        inferencePriority3,
+        experimentalFlags));
   }
 
   factory GpuDelegateOptionsV2.defaultOptions() {
